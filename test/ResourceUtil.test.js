@@ -1,10 +1,13 @@
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
+
 const { app, server } = require('../index');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
+
 let baseUrl;
+
 describe('Resource API', () => {
     before(async () => {
         const { address, port } = await server.address();
@@ -17,6 +20,7 @@ describe('Resource API', () => {
             });
         });
     });
+
     let count = 0;
     let resourceId; // Variable to store the ID of the resource
     // Test Suite for viewing resources
@@ -58,20 +62,16 @@ describe('Resource API', () => {
                     expect(res).to.have.status(201);
                     expect(res.body).to.be.an('array');
                     expect(res.body.length).to.equal(count + 1);
-                    resourceId = res.body[res.body.length - 1].id; // Store the ID of the newly added resource
+                    resourceId = res.body[res.body.length - 1].id; // Store the ID of
                     done();
                 });
         });
     });
-    // Test Suite for editing resources
     describe('PUT /edit-resource/:id', () => {
         it('should update an existing resource', (done) => {
             chai.request(baseUrl)
                 .put(`/edit-resource/${resourceId}`)
-                .send({
-                    name: 'Updated Resource', location: 'Updated Location',
-                    description: 'Updated description'
-                })
+                .send({ name: 'Updated Resource', location: 'Updated Location', description: 'Updated description'})
                 .end((err, res) => {
                     expect(res).to.have.status(201);
                     expect(res.body.message).to.equal('Resource modified successfully!');
